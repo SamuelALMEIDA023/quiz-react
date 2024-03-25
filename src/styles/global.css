@@ -1,0 +1,24 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+#root {
+    height: 100%;
+    width: 100%;
+}
+
+html {
+    background-color: #fef7e6;
+    font-size: 62.5%;
+    height: 100vh;
+    width: 100vw;
+}
+
+button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
