@@ -56,4 +56,14 @@
     list-style: none;
 }
 
+.correct {
+    border: 2px solid #4caf50;
+    background-color: #a8f3a8;
+}
+
+.incorrect {
+    border: 2px solid #f62c2c;
+    background-color: #f3b3b3;
+}
+
 
