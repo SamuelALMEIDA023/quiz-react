@@ -1,5 +1,6 @@
 import { useState  } from 'react';
 import { QuestionAnswer } from '../QuestionsAnswer'
+import { Button } from '../Button'
 import S from './styles.module.css'
 
 //array fake com a lista de info 
@@ -12,26 +13,26 @@ const QUESTION = [
     },
     {
         id: 2,
-        question: 'Qual é o meu nome?',
-        answers: ['Guilherme', 'Gabriel', 'Samuel', 'Fernando'],
-        correctAnswer: 'Samuel'
+        question: 'Qual é a minha idade?',
+        answers: ['17', '22', '27', '24'],
+        correctAnswer: '24'
     },
     {
         id: 3,
-        question: 'Qual é o meu nome?',
-        answers: ['Guilherme', 'Gabriel', 'Samuel', 'Fernando'],
-        correctAnswer: 'Samuel'
+        question: 'Qual comida eu mais gosto?',
+        answers: ['Massas', 'Churrasco', 'Japonês', 'Frutos do mar'],
+        correctAnswer: 'Churrasco'
     },
     {
         id: 4,
-        question: 'Qual é o meu nome?',
-        answers: ['Guilherme', 'Gabriel', 'Samuel', 'Fernando'],
-        correctAnswer: 'Fernando'
+        question: 'Qual a minha profissão?',
+        answers: ['Empreendedor', 'Músico', 'Militar', 'Desenvolvedor de Software'],
+        correctAnswer: 'Desenvolvedor de Software'
     }
 ]
 
 export function Quiz() {
-    const perguntaAtual = QUESTION[0];
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
                               // atualiza a função correctAnswerCount
     const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
     const [perguntaRespondida, setPerguntaRespondida] = useState(false);
@@ -53,6 +54,18 @@ export function Quiz() {
         }
 
         setPerguntaRespondida(true)
+    }
+
+    const perguntaAtual = QUESTION[currentQuestionIndex]
+
+    const handleNextQuestion = () => {
+        if(currentQuestionIndex + 1 < QUESTION.length) {
+            //fazendo alteração de estado usando uma função para fazer o incremento do 'index' (posição). Sempre que estiver em um 'setState' como abaixo fazendo uma mutação no valor dele, é recomendado fazer desta forma pegando o valor atual e incrementando.
+            setCurrentQuestionIndex(index => index + 1)
+        }
+
+        //Funcionalidade de reset, pois a pergunta já foi respondida
+        setPerguntaRespondida(false)
     }
 
     return (
@@ -77,6 +90,10 @@ export function Quiz() {
                         </li>
                     ))}
                 </ul>
+
+                {perguntaRespondida && (
+                    <Button onClick={handleNextQuestion}>Próxima pergunta</Button>
+                )}
             </div>
            </div>
         </div>
