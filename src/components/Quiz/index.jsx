@@ -1,7 +1,10 @@
 import { useState  } from 'react';
 import { QuestionAnswer } from '../QuestionsAnswer'
 import { Button } from '../Button'
+import { Result } from '../Result'
+import { ProgressBar } from '../ProgressBar';
 import S from './styles.module.css'
+
 
 //array fake com a lista de info 
 const QUESTION = [
@@ -36,6 +39,10 @@ export function Quiz() {
                               // atualiza a função correctAnswerCount
     const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
     const [perguntaRespondida, setPerguntaRespondida] = useState(false);
+    const [isTakingQuiz, setIsTakingQuiz] = useState(true);
+
+    const currentQuestionNumber = currentQuestionIndex + 1;
+    const quizSize = QUESTION.length;
 
     const handleAnswerQuestion = (event, question, answer) => {
         if (perguntaRespondida) {
@@ -46,7 +53,7 @@ export function Quiz() {
 
         //vai averigual se a classe é correta ou não e vai aplaicar o estilo na resposta
         const resultClassName = isCorrectAnswer ? S.correct : S.incorrect;
-        //usa-se o event.currentTarget para pegar onde está acontecendo o evento de clique - passnado a classe 'resultClassName para o 'button'
+        //usa-se o event.currentTarget para pegar onde está acontecendo o evento de clique - passanado a classe 'resultClassName para o 'button'
         event.currentTarget.classList.toggle(resultClassName);
 
         if(isCorrectAnswer) {
@@ -56,28 +63,45 @@ export function Quiz() {
         setPerguntaRespondida(true)
     }
 
-    const perguntaAtual = QUESTION[currentQuestionIndex]
+    const perguntaAtual = QUESTION[currentQuestionIndex];
 
     const handleNextQuestion = () => {
-        if(currentQuestionIndex + 1 < QUESTION.length) {
+        if(currentQuestionNumber < quizSize) {
             //fazendo alteração de estado usando uma função para fazer o incremento do 'index' (posição). Sempre que estiver em um 'setState' como abaixo fazendo uma mutação no valor dele, é recomendado fazer desta forma pegando o valor atual e incrementando.
             setCurrentQuestionIndex(index => index + 1)
-        }
+        } else (
+            setIsTakingQuiz(false)
+        )
 
         //Funcionalidade de reset, pois a pergunta já foi respondida
         setPerguntaRespondida(false)
     }
 
+    //Função 'tente novamente' e reseta os seus valores para iniciar novamente
+    const hadleTryAgain = () => {
+        setIsTakingQuiz(true)
+        setCorrectAnswerCount(0)
+        setCurrentQuestionIndex(0)
+    }
+
+    //Analisando se chegou na ultima pergunta para mudar a escrita no butão
+    const currentButtonText = currentQuestionNumber === quizSize ? 'Ver resultado' : 'Próxima pergunta'
+
     return (
         <div className={S.container}>
            <div className={S.card}>
-            <div className={S.quiz}>
-                <header className={S.quizHeader}>
-                <span className={S.questionCount}>PERGUNTA 1/4</span>
-                <p className={S.question}>
-                    {perguntaAtual.question}
-                </p>
-                </header>
+             {isTakingQuiz ? (
+                <div className={S.quiz}>
+                    <ProgressBar 
+                    size={quizSize}
+                    currentStep={currentQuestionNumber}
+                    />
+                  <header className={S.quizHeader}>
+                    <span className={S.questionCount}>PERGUNTA {currentQuestionNumber}/{quizSize}</span>
+                        <p className={S.question}>
+                          {perguntaAtual.question}
+                        </p>
+                  </header>
 
                 <ul className={S.answers}>
                     {perguntaAtual.answers.map(answer => (
@@ -92,9 +116,16 @@ export function Quiz() {
                 </ul>
 
                 {perguntaRespondida && (
-                    <Button onClick={handleNextQuestion}>Próxima pergunta</Button>
+                    <Button onClick={handleNextQuestion}>{currentButtonText}</Button>
                 )}
             </div>
+            ) : (
+                <Result 
+                correctAnswerCount={correctAnswerCount}
+                quizSize={quizSize}
+                hadleTryAgain={hadleTryAgain}
+                />
+            )}
            </div>
         </div>
     )
